@@ -5,6 +5,13 @@ Requirements
 * PHP 5.2 or greater
 * pdo_sqlite
 
+Getting Externals
+-----------------
+
+    > svn update
+    > ./doctrine_2/vendor/import_from_git.sh
+    > ./propel_16/vendor/import_from_git.sh
+
 Running All The Benchmarks
 --------------------------
 
