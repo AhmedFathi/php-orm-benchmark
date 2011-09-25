@@ -8,7 +8,7 @@ class Propel16TestSuite extends AbstractTestSuite
 	{
 		set_include_path(
 			realpath(dirname(__FILE__) . '/build/classes') . PATH_SEPARATOR .
-			realpath(dirname(__FILE__) . '/vendor/propel/runtime/lib') . PATH_SEPARATOR .
+			realpath(dirname(__FILE__) . '/vendor/Propel/runtime/lib') . PATH_SEPARATOR .
 			get_include_path()
 		);
 
@@ -68,7 +68,7 @@ class Propel16TestSuite extends AbstractTestSuite
 	function runComplexQuery($i)
 	{
 		$authors = AuthorQuery::create()
-			->where('Author.Id > ?', $this->authors[array_rand($this->authors)])
+			->filterById($this->authors[array_rand($this->authors)], Criteria::GREATER_THAN)
 			->orWhere('(Author.FirstName || Author.LastName) = ?', 'John Doe')
 			->count($this->con);
 	}

@@ -319,11 +319,11 @@ abstract class BaseAuthor extends BaseObject  implements Persistent
 
 		$con->beginTransaction();
 		try {
+			$deleteQuery = AuthorQuery::create()
+				->filterByPrimaryKey($this->getPrimaryKey());
 			$ret = $this->preDelete($con);
 			if ($ret) {
-				AuthorQuery::create()
-					->filterByPrimaryKey($this->getPrimaryKey())
-					->delete($con);
+				$deleteQuery->delete($con);
 				$this->postDelete($con);
 				$con->commit();
 				$this->setDeleted(true);
@@ -412,20 +412,12 @@ abstract class BaseAuthor extends BaseObject  implements Persistent
 			// If this object has been modified, then save it to the database.
 			if ($this->isModified()) {
 				if ($this->isNew()) {
-					$criteria = $this->buildCriteria();
-					if ($criteria->keyContainsValue(AuthorPeer::ID) ) {
-						throw new PropelException('Cannot insert a value for auto-increment primary key ('.AuthorPeer::ID.')');
-					}
-
-					$pk = BasePeer::doInsert($criteria, $con);
-					$affectedRows = 1;
-					$this->setId($pk);  //[IMV] update autoincrement primary key
-					$this->setNew(false);
+					$this->doInsert($con);
 				} else {
-					$affectedRows = AuthorPeer::doUpdate($this, $con);
+					$this->doUpdate($con);
 				}
-
-				$this->resetModified(); // [HL] After being saved an object is no longer 'modified'
+				$affectedRows += 1;
+				$this->resetModified();
 			}
 
 			if ($this->collBooks !== null) {
@@ -441,6 +433,39 @@ abstract class BaseAuthor extends BaseObject  implements Persistent
 		}
 		return $affectedRows;
 	} // doSave()
+
+	/**
+	 * Insert the row in the database.
+	 *
+	 * @param      PropelPDO $con
+	 *
+	 * @throws     PropelException
+	 * @see        doSave()
+	 */
+	protected function doInsert(PropelPDO $con)
+	{
+		$criteria = $this->buildCriteria();
+		if ($criteria->keyContainsValue(AuthorPeer::ID) ) {
+			throw new PropelException('Cannot insert a value for auto-increment primary key (' . AuthorPeer::ID . ')');
+		}
+		$pk = BasePeer::doInsert($criteria, $con);
+		$this->setId($pk);  //[IMV] update autoincrement primary key
+		$this->setNew(false);
+	}
+
+	/**
+	 * Update the row in the database.
+	 *
+	 * @param      PropelPDO $con
+	 *
+	 * @see        doSave()
+	 */
+	protected function doUpdate(PropelPDO $con)
+	{
+		$selectCriteria = $this->buildPkeyCriteria();
+		$valuesCriteria = $this->buildCriteria();
+		BasePeer::doUpdate($selectCriteria, $valuesCriteria, $con);
+	}
 
 	/**
 	 * Array of ValidationFailed objects.
@@ -807,6 +832,22 @@ abstract class BaseAuthor extends BaseObject  implements Persistent
 		return self::$peer;
 	}
 
+
+	/**
+	 * Initializes a collection based on the name of a relation.
+	 * Avoids crafting an 'init[$relationName]s' method name
+	 * that wouldn't work when StandardEnglishPluralizer is used.
+	 *
+	 * @param      string $relationName The name of the relation to initialize
+	 * @return     void
+	 */
+	public function initRelation($relationName)
+	{
+		if ('Book' == $relationName) {
+			return $this->initBooks();
+		}
+	}
+
 	/**
 	 * Clears out the collBooks collection
 	 *
@@ -908,8 +949,7 @@ abstract class BaseAuthor extends BaseObject  implements Persistent
 	 * through the Book foreign key attribute.
 	 *
 	 * @param      Book $l Book
-	 * @return     void
-	 * @throws     PropelException
+	 * @return     Author The current object (for fluent API support)
 	 */
 	public function addBook(Book $l)
 	{
@@ -920,6 +960,8 @@ abstract class BaseAuthor extends BaseObject  implements Persistent
 			$this->collBooks[]= $l;
 			$l->setAuthor($this);
 		}
+
+		return $this;
 	}
 
 	/**
@@ -972,25 +1014,6 @@ abstract class BaseAuthor extends BaseObject  implements Persistent
 	public function __toString()
 	{
 		return (string) $this->exportTo(AuthorPeer::DEFAULT_STRING_FORMAT);
-	}
-
-	/**
-	 * Catches calls to virtual methods
-	 */
-	public function __call($name, $params)
-	{
-		if (preg_match('/get(\w+)/', $name, $matches)) {
-			$virtualColumn = $matches[1];
-			if ($this->hasVirtualColumn($virtualColumn)) {
-				return $this->getVirtualColumn($virtualColumn);
-			}
-			// no lcfirst in php<5.3...
-			$virtualColumn[0] = strtolower($virtualColumn[0]);
-			if ($this->hasVirtualColumn($virtualColumn)) {
-				return $this->getVirtualColumn($virtualColumn);
-			}
-		}
-		return parent::__call($name, $params);
 	}
 
 } // BaseAuthor

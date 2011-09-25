@@ -24,7 +24,7 @@ abstract class BaseAuthorPeer {
 
 	/** the related TableMap class for this table */
 	const TM_CLASS = 'AuthorTableMap';
-	
+
 	/** The total number of columns. */
 	const NUM_COLUMNS = 4;
 
@@ -48,7 +48,7 @@ abstract class BaseAuthorPeer {
 
 	/** The default string format for model objects of the related table **/
 	const DEFAULT_STRING_FORMAT = 'YAML';
-	
+
 	/**
 	 * An identiy map to hold any loaded instances of Author objects.
 	 * This must be public so that other peer classes can access this when hydrating from JOIN
@@ -213,7 +213,7 @@ abstract class BaseAuthorPeer {
 		return $count;
 	}
 	/**
-	 * Method to select one object from the DB.
+	 * Selects one object from the DB.
 	 *
 	 * @param      Criteria $criteria object used to create the SELECT statement.
 	 * @param      PropelPDO $con
@@ -232,7 +232,7 @@ abstract class BaseAuthorPeer {
 		return null;
 	}
 	/**
-	 * Method to do selects.
+	 * Selects several row from the DB.
 	 *
 	 * @param      Criteria $criteria The Criteria object used to build the SELECT statement.
 	 * @param      PropelPDO $con
@@ -359,7 +359,7 @@ abstract class BaseAuthorPeer {
 	 */
 	public static function clearRelatedInstancePool()
 	{
-		// Invalidate objects in BookPeer instance pool, 
+		// Invalidate objects in BookPeer instance pool,
 		// since one or more of them may be deleted by ON DELETE CASCADE/SETNULL rule.
 		BookPeer::clearInstancePool();
 	}
@@ -384,7 +384,7 @@ abstract class BaseAuthorPeer {
 	}
 
 	/**
-	 * Retrieves the primary key from the DB resultset row 
+	 * Retrieves the primary key from the DB resultset row
 	 * For tables with a single-column primary key, that simple pkey value will be returned.  For tables with
 	 * a multi-column primary key, an array of the primary key columns will be returned.
 	 *
@@ -453,6 +453,7 @@ abstract class BaseAuthorPeer {
 		}
 		return array($obj, $col);
 	}
+
 	/**
 	 * Returns the TableMap related to this peer.
 	 * This method is not needed for general use but a specific application could have a need.
@@ -494,7 +495,7 @@ abstract class BaseAuthorPeer {
 	}
 
 	/**
-	 * Method perform an INSERT on the database, given a Author or Criteria object.
+	 * Performs an INSERT on the database, given a Author or Criteria object.
 	 *
 	 * @param      mixed $values Criteria or Author object containing data that is used to create the INSERT statement.
 	 * @param      PropelPDO $con the PropelPDO connection to use
@@ -537,7 +538,7 @@ abstract class BaseAuthorPeer {
 	}
 
 	/**
-	 * Method perform an UPDATE on the database, given a Author or Criteria object.
+	 * Performs an UPDATE on the database, given a Author or Criteria object.
 	 *
 	 * @param      mixed $values Criteria or Author object containing data that is used to create the UPDATE statement.
 	 * @param      PropelPDO $con The connection to use (specify PropelPDO connection object to exert more control over transactions).
@@ -576,11 +577,12 @@ abstract class BaseAuthorPeer {
 	}
 
 	/**
-	 * Method to DELETE all rows from the author table.
+	 * Deletes all rows from the author table.
 	 *
+	 * @param      PropelPDO $con the connection to use
 	 * @return     int The number of affected rows (if supported by underlying database driver).
 	 */
-	public static function doDeleteAll($con = null)
+	public static function doDeleteAll(PropelPDO $con = null)
 	{
 		if ($con === null) {
 			$con = Propel::getConnection(AuthorPeer::DATABASE_NAME, Propel::CONNECTION_WRITE);
@@ -606,7 +608,7 @@ abstract class BaseAuthorPeer {
 	}
 
 	/**
-	 * Method perform a DELETE on the database, given a Author or Criteria object OR a primary key value.
+	 * Performs a DELETE on the database, given a Author or Criteria object OR a primary key value.
 	 *
 	 * @param      mixed $values Criteria or Author object or primary key or array of primary keys
 	 *              which is used to create the DELETE statement
