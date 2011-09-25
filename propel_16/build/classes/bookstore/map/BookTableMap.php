@@ -14,7 +14,8 @@
  *
  * @package    propel.generator.bookstore.map
  */
-class BookTableMap extends TableMap {
+class BookTableMap extends TableMap
+{
 
 	/**
 	 * The (dot-path) name of this class
@@ -30,7 +31,7 @@ class BookTableMap extends TableMap {
 	 */
 	public function initialize()
 	{
-	  // attributes
+		// attributes
 		$this->setName('book');
 		$this->setPhpName('Book');
 		$this->setClassname('Book');
@@ -51,7 +52,7 @@ class BookTableMap extends TableMap {
 	 */
 	public function buildRelations()
 	{
-    $this->addRelation('Author', 'Author', RelationMap::MANY_TO_ONE, array('author_id' => 'id', ), 'SET NULL', 'CASCADE');
+		$this->addRelation('Author', 'Author', RelationMap::MANY_TO_ONE, array('author_id' => 'id', ), 'SET NULL', 'CASCADE');
 	} // buildRelations()
 
 } // BookTableMap
